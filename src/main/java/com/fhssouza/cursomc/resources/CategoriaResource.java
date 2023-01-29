@@ -1,6 +1,8 @@
 package com.fhssouza.cursomc.resources;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fhssouza.cursomc.domain.Categoria;
+import com.fhssouza.cursomc.dto.CategoriaDTO;
 import com.fhssouza.cursomc.services.CategoriaService;
 
 @RestController
@@ -26,8 +29,8 @@ public class CategoriaResource {
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Categoria> findById(@PathVariable Integer id) {
-		Categoria categoria = service.findById(id);
-		return ResponseEntity.ok().body(categoria);
+		Categoria obj = service.findById(id);
+		return ResponseEntity.ok().body(obj);
 	}
 	
 	@PostMapping
@@ -49,5 +52,12 @@ public class CategoriaResource {
 	public ResponseEntity<Void> deteleById(@PathVariable Integer id) {
 		service.deleteById(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<CategoriaDTO>> findAl() {
+		List<Categoria> list = service.findAll();
+		List<CategoriaDTO> listDTO = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDTO);
 	}
 }
